@@ -1,0 +1,54 @@
+PROCEDURE
+ "LEARNING_HUB"."learninghub.procedures::CreateMission" (
+ IN intab "LEARNING_HUB"."learninghub.db::model.procedures.Mission" ,
+ OUT outtab "LEARNING_HUB"."learninghub.db::model.procedures.errors"
+ )
+ LANGUAGE SQLSCRIPT
+ SQL SECURITY INVOKER AS
+ --DEFAULT SCHEMA <schema>
+ --READS SQL DATA AS
+begin
+
+
+
+declare lv_roomId string;
+declare lv_displayName string;
+declare lv_name string;
+declare lv_createdFromMissionId integer;
+declare lv_id integer;
+declare lv_subMissionId integer;
+declare lv_description string;
+declare lv_badgeURLPath string;
+declare lv_subMissionBadgeURLPath string;
+declare lv_subMissionBadge string;
+declare lv_subMissionBadgeDisplayName string; 
+declare lv_subMissionPoints integer;
+declare lv_subMissionOrderNumber integer;
+
+
+select "roomId", "displayName", "name", "createdFromMissionId"  into lv_roomId, lv_displayName, lv_name, lv_createdFromMissionId from :intab;
+select "learninghub.db::MissionSequence".NEXTVAL into lv_id from dummy;
+
+if :lv_displayName = null then
+ outtab = select 500 as http_status_code,
+ 'Invalid name ' || lv_displayName as error_message,
+ 'No Way! Name must not be empty' as detail from dummy;
+else
+    if :lv_createdFromMissionId != 0 then
+        select "description", '' as "badgeURLPath" into lv_description, lv_badgeURLPath from "learninghub.db::model.Mission" where "id"=lv_createdFromMissionId;
+    end if;
+    
+    insert into "learninghub.db::model.Mission" values (lv_id, lv_roomId,lv_name, lv_displayName,  lv_description, lv_badgeURLPath, 0, lv_createdFromMissionId, 'Draft');
+    if :lv_createdFromMissionId != 0 then
+       
+        DECLARE CURSOR c_SubMissions for SELECT "id", "badgeURLPath", "badge", "badgeDisplayName", "points", "missionId", "orderNumber" FROM "LEARNING_HUB"."learninghub.db::model.SubMission" where "missionId"=lv_createdFromMissionId;
+
+        for subMission as c_SubMissions do 
+            select "learninghub.db::SubMissionSequence".NEXTVAL into lv_subMissionId from dummy;
+            SELECT lv_subMissionId as "id", null as "badgeURLPath", null as "badge", null as "badgeDisplayName", "points", lv_id as "missionId", "orderNumber" FROM "LEARNING_HUB"."learninghub.db::model.SubMission" where "id"=subMission."id" into "LEARNING_HUB"."learninghub.db::model.SubMission";
+ 
+            SELECT "learninghub.db::TaskSequence".NEXTVAL as "id", lv_subMissionId as "subMissionId", "type", "particularObjectId", "particularObjectText", "numberObjects", "enableAny" FROM "LEARNING_HUB"."learninghub.db::model.Task" where "subMissionId"= subMission."id" into "LEARNING_HUB"."learninghub.db::model.Task";           
+        end for;
+    end if;
+end if;
+end;

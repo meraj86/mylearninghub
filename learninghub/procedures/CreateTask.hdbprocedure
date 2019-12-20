@@ -1,0 +1,34 @@
+PROCEDURE
+ "LEARNING_HUB"."learninghub.procedures::CreateTask" (
+ IN intab "LEARNING_HUB"."learninghub.db::model.procedures.TaskProc" ,
+ OUT outtab "LEARNING_HUB"."learninghub.db::model.procedures.errors"
+ )
+ LANGUAGE SQLSCRIPT
+ SQL SECURITY INVOKER AS
+ --DEFAULT SCHEMA <schema>
+ --READS SQL DATA AS
+begin
+
+
+
+declare lv_subMissionId integer;
+declare lv_typeId integer;
+declare lv_particularObjectId string;
+declare lv_particularObjectText string;
+declare lv_numberObjects integer;
+declare lv_enableAny integer;
+
+select "subMissionId", "type", "numberObjects", "enableAny" into lv_subMissionId, lv_typeId, lv_numberObjects, lv_enableAny from :intab;
+
+
+
+if :lv_subMissionId = null then 
+ outtab = select 500 as http_status_code,
+ 'Invalid subMissionId ' || lv_subMissionId as error_message,
+ 'No Way! subMissionId must not be empty' as detail from dummy;
+else
+  insert into "learninghub.db::model.Task"
+ values ("learninghub.db::TaskSequence".NEXTVAL,lv_subMissionId, lv_typeId, '', '', lv_numberObjects, lv_enableAny);
+end if;
+
+end;

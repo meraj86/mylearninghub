@@ -1,0 +1,10 @@
+import = [
+            {
+                table = "learninghub.db::model.SourceSystem";
+                schema = "LEARNING_HUB";
+                file = "learninghub.db:SourceSystems.csv";
+                header = true;
+                delimField = ";";
+               
+            }
+         ];

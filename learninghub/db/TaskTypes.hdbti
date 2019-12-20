@@ -1,0 +1,10 @@
+import = [
+            {
+                table = "learninghub.db::model.TaskType";
+                schema = "LEARNING_HUB";
+                file = "learninghub.db:TaskTypes.csv";
+                header = true;
+                delimField = ";";
+               
+            }
+         ];

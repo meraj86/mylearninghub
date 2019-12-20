@@ -1,0 +1,27 @@
+PROCEDURE
+ "LEARNING_HUB"."learninghub.procedures::CreateRoom" (
+ IN intab "LEARNING_HUB"."learninghub.db::model.procedures.Room" ,
+ OUT outtab "LEARNING_HUB"."learninghub.db::model.procedures.errors"
+ )
+ LANGUAGE SQLSCRIPT
+ SQL SECURITY INVOKER AS
+ --DEFAULT SCHEMA <schema>
+ --READS SQL DATA AS
+begin
+
+declare lv_id string; 
+declare lv_lead string;
+declare lv_name string;
+declare lv_members integer;
+declare lv_participation double;
+declare lv_gamification integer;
+
+select "id", "lead", "name", "members", "participation", "gamification" into lv_id, lv_lead, lv_name, lv_members, lv_participation, lv_gamification from :intab;
+if :lv_id = '' then
+ outtab = select 500 as http_status_code,
+ 'Invalid group id ' || lv_id as error_message,
+ 'No Way! GroupId must not be empty' as detail from dummy;
+else
+ INSERT INTO "learninghub.db::model.Room" VALUES (lv_id, lv_lead, lv_name, lv_members, lv_participation, lv_gamification);
+end if;
+end;

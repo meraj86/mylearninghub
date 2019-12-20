@@ -1,0 +1,6 @@
+{   
+    "exposed": true,
+    "authentication" : {"method": "Basic"},
+    "cache_control": "no-cache, no-store",
+    "default_file": "index.html"
+}

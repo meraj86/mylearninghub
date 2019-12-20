@@ -1,0 +1,30 @@
+PROCEDURE
+ "LEARNING_HUB"."learninghub.procedures::CreateSubMission" (
+ IN intab "LEARNING_HUB"."learninghub.db::model.procedures.SubMission" ,
+ OUT outtab "LEARNING_HUB"."learninghub.db::model.procedures.errors"
+ )
+ LANGUAGE SQLSCRIPT
+ SQL SECURITY INVOKER AS
+ --DEFAULT SCHEMA <schema>
+ --READS SQL DATA AS
+begin
+
+
+
+declare lv_badgeURLPath string;
+declare lv_badge string;
+declare lv_badgeDisplayName string;
+declare lv_points integer;
+declare lv_missionId integer;
+declare lv_orderNumber integer;
+
+select "badgeURLPath", "badge", "badgeDisplayName", "points", "missionId", "orderNumber" into lv_badgeURLPath, lv_badge, lv_badgeDisplayName, lv_points, lv_missionId, lv_orderNumber  from :intab;
+if :lv_missionId = null then
+ outtab = select 500 as http_status_code,
+ 'Invalid missionId ' || lv_missionId as error_message,
+ 'No Way! MissionId must not be empty' as detail from dummy;
+else
+  insert into "learninghub.db::model.SubMission"
+ values ("learninghub.db::SubMissionSequence".NEXTVAL, lv_badgeURLPath, lv_badge, lv_badgeDisplayName, lv_points, lv_missionId, lv_orderNumber);
+end if;
+end;

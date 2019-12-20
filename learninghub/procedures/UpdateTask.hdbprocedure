@@ -1,0 +1,27 @@
+PROCEDURE
+ "LEARNING_HUB"."learninghub.procedures::UpdateTask" (
+ IN intab "LEARNING_HUB"."learninghub.db::model.procedures.TaskProc" ,
+  IN oldintab "LEARNING_HUB"."learninghub.db::model.procedures.TaskProc" ,
+ OUT outtab "LEARNING_HUB"."learninghub.db::model.procedures.errors"
+ )
+ LANGUAGE SQLSCRIPT
+ SQL SECURITY INVOKER AS
+ --DEFAULT SCHEMA <schema>
+ --READS SQL DATA AS
+begin
+
+declare lv_id integer; 
+declare lv_typeId integer;
+declare lv_particularObjectId string;
+declare lv_numberObjects integer;
+declare lv_enableAny integer;
+
+select "id","type", "particularObjectId", "numberObjects", "enableAny" into lv_id, lv_typeId, lv_particularObjectId, lv_numberObjects, lv_enableAny from :intab;
+if :lv_id = '' then 
+ outtab = select 500 as http_status_code,
+ 'Invalid task id ' || lv_id as error_message,
+ 'No Way! Task Id must not be empty' as detail from dummy;
+else
+ UPDATE "learninghub.db::model.Task" SET "type" = lv_typeId, "particularObjectId" = lv_particularObjectId, "numberObjects" = lv_numberObjects, "enableAny" = lv_enableAny WHERE "id" = lv_id;
+end if; 
+end;

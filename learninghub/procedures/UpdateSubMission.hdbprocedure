@@ -1,0 +1,27 @@
+PROCEDURE
+ "LEARNING_HUB"."learninghub.procedures::UpdateSubMission" (
+ IN intab "LEARNING_HUB"."learninghub.db::model.procedures.SubMission" ,
+  IN oldintab "LEARNING_HUB"."learninghub.db::model.procedures.SubMission" ,
+ OUT outtab "LEARNING_HUB"."learninghub.db::model.procedures.errors"
+ )
+ LANGUAGE SQLSCRIPT
+ SQL SECURITY INVOKER AS
+ --DEFAULT SCHEMA <schema>
+ --READS SQL DATA AS
+begin
+
+declare lv_id integer; 
+declare lv_badgeURLPath string;
+declare lv_badge string;
+declare lv_badgeDisplayName string;
+declare lv_points integer;
+
+select "id", "badgeURLPath", "badge", "badgeDisplayName", "points"into lv_id, lv_badgeURLPath, lv_badge, lv_badgeDisplayName, lv_points from :intab;
+if :lv_id = '' then
+ outtab = select 500 as http_status_code,
+ 'Invalid SubMission id ' || lv_id as error_message,
+ 'No Way! SubMission Id must not be empty' as detail from dummy;
+else
+ UPDATE "learninghub.db::model.SubMission" SET  "badgeURLPath" = lv_badgeURLPath, "badge" = lv_badge, "badgeDisplayName" = lv_badgeDisplayName, "points" = lv_points where "id" = lv_id;
+end if;
+end;

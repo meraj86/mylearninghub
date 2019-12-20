@@ -1,0 +1,146 @@
+namespace learninghub.db;
+
+@Schema: 'LEARNING_HUB'
+context model {
+   
+    Entity Room{
+       key id: String(25); 
+       lead: String(300);
+       name: String(400);
+       missions: Association[*] to Mission on missions.roomId = id;
+       members: Integer;
+       participation: Double;
+       gamification: Integer;
+     
+    };
+    Entity Mission {
+        key id: Integer;
+        roomId: String(25);
+        name: String(400);
+        displayName: String(400);
+        description: String(2000);
+        badgeURLPath: String(400);
+        subMissions: Association[*] to SubMission on subMissions.missionId = id;
+        template: Integer;
+        createdFromMissionId : Integer;
+        isDraft : String(10);     
+    };
+    
+    Entity SubMission { //this is level in the mocks but it is better to name it more generic - it is a Submission.
+        key id: Integer;
+        badgeURLPath: String(400);
+        badge: String(400);
+        badgeDisplayName: String(400);
+        tasks: Association[*] to Task on tasks.subMissionId = id;
+        points: Integer;  
+        missionId: Integer;
+        orderNumber: Integer;
+    };
+    
+    Entity Task {
+        key id: Integer;
+        subMissionId: Integer;
+      //  type: Association to TaskType;
+        type:Integer;
+        particularObjectId: String(100);
+        particularObjectText: String(300);
+        numberObjects: Integer;
+        enableAny: Integer;
+    };
+    
+
+    
+    Entity SourceSystem {
+         key id: Integer;
+         type: String(100);
+    };
+    
+    Entity TaskType {
+        key id: Integer;
+        text: String(200); // for instance "Complete E-Learning". This is the value of the first drop down
+        event: String(200);
+        enableAny: Integer;
+        enableParticulaterObject: Integer;
+        isGlobal: Integer;
+        system: String(15);
+        searchPath: String(300);
+        objectType: String(100);
+    };
+    
+    
+   
+    Entity MissionTemplate {
+        key id: Integer;
+        name: String(400);
+        displayName: String(400);
+        description: String(1000);
+        type: String(100); //Single or Multiple Level
+        badgeURLPath: String(400);
+        subMissions: Association[*] to SubMission on subMissions.missionId = id;
+    };
+    
+    
+    context procedures{
+
+       type Room{
+            id: String(25); 
+            lead: String(300);
+            name: String(400);
+            members: Integer;
+            participation: Double;
+            gamification: Integer;
+        };
+        
+        type Mission {
+            id: Integer;
+            roomId: String(25);
+            name: String(400);
+            displayName: String(400);
+            description: String(1000);
+            badgeURLPath: String(400);
+            template: Integer;
+            createdFromMissionId : Integer;
+        };
+        
+        type SubMission { //this is level in the mocks but it is better to name it more generic - it is a Submission.
+            id: Integer;
+            badgeURLPath: String(400);
+            badge: String(400);
+            badgeDisplayName: String(400);
+            points: Integer;  
+            missionId: Integer;
+            orderNumber: Integer;
+            
+        };
+    
+        type TaskProc {
+            id: Integer;
+            subMissionId: Integer;
+            //type: TaskTypeProc;
+            type: Integer;
+            particularObjectId: String(100);
+            particularObjectText: String(300);
+            numberObjects: Integer;
+            enableAny: Integer;
+        };
+        
+        type TaskTypeProc {
+            id: Integer;
+            text: String(200); // for instance "Complete E-Learning". This is the value of the first drop down
+            event: String(200);
+            enableAny: Integer;
+            enableParticulaterObject: Integer;
+            isGlobal: Integer;
+            system: String(15);
+            searchPath: String(300);
+            objectType: String(100);
+        };
+        
+        type errors {
+            HTTP_STATUS_CODE : Integer;
+            ERROR_MESSAGE : String(100);
+            DETAIL : String(100);
+        };
+    };
+
+};

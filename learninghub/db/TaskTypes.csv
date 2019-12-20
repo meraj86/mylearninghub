@@ -1,0 +1,14 @@
+id;text;event;enableAny;enableParticularObject;isGlobal;system;searchPath;objectType
+1;Post question;asked_forum_question;1;0;0;jam;;
+2;Answer question;answered_forum_question;1;1;0;jam;/AllQuestions;question
+3;Add discussion;added_discussion;1;0;0;jam;;
+4;Finish eLearning;_lms_item_completed;1;1;0;lms_catalog;;e-Learning
+5;Finish eLearning;_lms_item_completed;1;1;1;lms_catalog;;e-Learning
+6;Vote for idea;voted_for_idea;1;1;0;jam;/AllIdeas;idea
+8;Read a blog post;viewed_blog;1;1;0;jam;/AllContentItems?$filter=ContentItemType%20eq%20%27BlogEntry%27;blog post
+9;Add idea;added_idea;1;0;0;jam;;
+10;Mark Best Answer;answered_question_correctly;1;1;0;jam;/AllQuestions;question
+11;Create video;document_created;1;0;0;jam;;
+12;Watch video;video_viewed;1;1;0;jam;/AllContentItems?$filter=ContentItemType%20eq%20%27Document%27;video
+13;Manual Task;manual_task;0;1;0;jam;;
+14;Manual Task;manual_task;0;1;1;jam;;

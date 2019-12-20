@@ -1,0 +1,44 @@
+
+service  { 
+
+    "learninghub.db::model.Room" as "Room"
+        navigates ( "Asso_Room_Mission" as "missions" ) 
+        create using  "learninghub.procedures::CreateRoom";
+    
+    "learninghub.db::model.Mission" as "Mission"
+        navigates ( "Asso_Mission_SubMission" as "subMissions" ) 
+        create using  "learninghub.procedures::CreateMission";
+    
+    "learninghub.db::model.SubMission" as "SubMission"
+        navigates ( "Asso_SubMission_Task" as "tasks" ) 
+        create using  "learninghub.procedures::CreateSubMission";
+      //  update using "learninghub.procedures::UpdateSubMission";
+    
+    "learninghub.db::model.Task" as "Task"
+        navigates ( "Asso_Task_TaskType" as "taskType") 
+        create using  "learninghub.procedures::CreateTask";
+ //       update using "learninghub.procedures::UpdateTask";
+        
+    "learninghub.db::model.TaskType" as "TaskType" ;
+
+    
+    "learninghub.db::model.SourceSystem" as "SourceSystem";
+    
+
+
+    association "Asso_Room_Mission" principal "Room"("id") 
+        multiplicity "1" dependent "Mission"("roomId") multiplicity "*";
+    
+    association "Asso_Mission_SubMission" principal "Mission"("id") 
+        multiplicity "1" dependent "SubMission"("missionId") multiplicity "*";
+        
+    association "Asso_SubMission_Task" principal "SubMission"("id") 
+        multiplicity "1" dependent "Task"("subMissionId") multiplicity "*";
+        
+    association "Asso_Task_TaskType" principal "Task"("type") 
+        multiplicity "1" dependent "TaskType"("id") multiplicity "1";
+        
+        
+
+   
+}  
